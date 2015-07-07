@@ -16,51 +16,31 @@
 #
 
 # Make sure to run app like so:
-# dev_appserver.py --datastore_consistency_policy=consistent [path_to_app_name]
+# dev_appserver.py [path_to_app_name]
 # in order to see changes reflected in the redirect immediately
 
-# To clear the datastore:
-# /usr/local/google_appengine/dev_appserver.py --clear_datastore=1 [path_to_app_name]
-
-import os
+# import os
+# import jinja2
 import webapp2
-import jinja2
-from google.appengine.ext import ndb
+from google.appengine.api import users
 
 
-JINJA_ENVIRONMENT = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
-    extensions=['jinja2.ext.autoescape'],
-    autoescape=True)
-
-# Define a Student model for the Datastore
-class Post(ndb.Model):
-    name = ndb.StringProperty(required=True)
-    content = ndb.TextProperty(required=True)
-    date = ndb.DateTimeProperty(auto_now_add=True)
-
+# JINJA_ENVIRONMENT = jinja2.Environment(
+#     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+#     extensions=['jinja2.ext.autoescape'],
+#     autoescape=True)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        # Get all of the student data from the datastore
-        query = Post.query()
-        post_data = query.fetch()
-        # Pass the data to the template
-        template_values = {
-            'posts' : post_data
-        }
-        template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render(template_values))
+        user = users.get_current_user()
+        if user:
+            greeting = ('Welcome, %s! (<a href="%s">sign out</a>)' %
+                        (user.nickname(), users.create_logout_url('/')))
+        else:
+            greeting = ('<a href="%s">Sign in or register</a>.' %
+                        users.create_login_url('/'))
 
-    def post(self):
-        # Get the student name and university from the form
-        name = self.request.get('name')
-        content = self.request.get('content')
-        # Create a new Student and put it in the datastore
-        post = Post(name=name, content=content)
-        post.put()
-        # Redirect to the main handler that will render the template
-        self.redirect('/')
+        self.response.out.write('<html><body>%s</body></html>' % greeting)
 
 
 
