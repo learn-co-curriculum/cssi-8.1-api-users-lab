@@ -19,16 +19,16 @@
 # dev_appserver.py [path_to_app_name]
 # in order to see changes reflected in the redirect immediately
 
-# import os
-# import jinja2
+import os
+import jinja2
 import webapp2
 from google.appengine.api import users
 
 
-# JINJA_ENVIRONMENT = jinja2.Environment(
-#     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
-#     extensions=['jinja2.ext.autoescape'],
-#     autoescape=True)
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -40,7 +40,12 @@ class MainHandler(webapp2.RequestHandler):
             greeting = ('<a href="%s">Sign in or register</a>.' %
                         users.create_login_url('/'))
 
-        self.response.out.write('<html><body>%s</body></html>' % greeting)
+        # self.response.out.write('<html><body>%s</body></html>' % greeting)
+        template_values = {
+            'greeting' : greeting
+        }
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render(template_values))
 
 
 
