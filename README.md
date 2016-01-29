@@ -23,4 +23,4 @@ This lab sets up a simple use for the App Engine Users api. You will be building
 + What other information can we access using the users API? Add some of that to the page.
 + How could we make the website more intuitive?
 + Can we mimic the login UI of other sites you've seen before?
-<a href='https://learn.co/lessons/cssi-8.1-api-users-lab' data-visibility='hidden'>View this lesson on Learn.co</a>
+<p data-visibility='hidden'>View <a href='https://learn.co/lessons/cssi-8.1-api-users-lab' title='Python API Users Lab'>Python API Users Lab</a> on Learn.co and start learning to code for free.</p>
